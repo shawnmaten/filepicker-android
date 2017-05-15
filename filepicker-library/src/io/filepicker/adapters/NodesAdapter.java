@@ -22,13 +22,19 @@ import io.filepicker.utils.Utils;
  */
 public class NodesAdapter<T> extends ArrayAdapter<T> {
 
-    private static final int VIEW_TYPE_COUNT = 3;
+    private static final int VIEW_TYPE_COUNT = 4;
 
     private static final int TYPE_THUMBNAIL_NAMED_IMAGE = 0;
     private static final int TYPE_THUMBNAIL_IMAGE = 1;
     private static final int TYPE_LIST_ITEM = 2;
+    private static final int TYPE_PROVIDER = 3;
 
     private boolean thumbnail = false;
+    private boolean provider = false;
+
+    public void setProvider(boolean provider) {
+        this.provider = provider;
+    }
 
     private final ArrayList<PickedFile> pickedFiles;
 
@@ -61,6 +67,11 @@ public class NodesAdapter<T> extends ArrayAdapter<T> {
                     row = inflater.inflate(R.layout.thumbnail_item_node, null);
                     viewHolder.icon = (ImageView) row.findViewById(R.id.thumbNode);
                     break;
+                case TYPE_PROVIDER:
+                    row = inflater.inflate(R.layout.thumbnail_providers, null);
+                    viewHolder.icon = (ImageView) row.findViewById(R.id.imageFolder);
+                    viewHolder.name = (TextView) row.findViewById(R.id.tvFolderName);
+                    break;
                 default:
                     row = inflater.inflate(R.layout.list_item_node, null);
                     viewHolder.icon = (ImageView) row.findViewById(R.id.thumbNode);
@@ -84,6 +95,10 @@ public class NodesAdapter<T> extends ArrayAdapter<T> {
                 ImageLoader.getImageLoader(context)
                         .load(node.getThumbnailUrl())
                         .into(viewHolder.icon);
+                break;
+            case TYPE_PROVIDER:
+                viewHolder.setName(Utils.getShortName(node.displayName));
+                viewHolder.setIcon(node.getImageResource());
                 break;
             default:
                 viewHolder.setName(node.displayName);
@@ -111,6 +126,9 @@ public class NodesAdapter<T> extends ArrayAdapter<T> {
     @Override
     public int getItemViewType(int position) {
         Node node = (Node) nodes.get(position);
+
+        if (provider)
+            return TYPE_PROVIDER;
 
         if (thumbnail) {
             // Directories and files with names (not images)

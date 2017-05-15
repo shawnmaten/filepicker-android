@@ -86,7 +86,13 @@ public class NodesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_nodes, container, false);
+
+        View view = null;
+
+        if (viewType.equals(Constants.PROVIDERS_VIEW))
+            view = inflater.inflate(R.layout.fragment_nodes_providers, container, false);
+        else
+            view = inflater.inflate(R.layout.fragment_nodes, container, false);
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.progressBarNode);
         mUploadFilesButton = (Button) view.findViewById(R.id.btnUploadFiles);
@@ -96,6 +102,9 @@ public class NodesFragment extends Fragment {
                 currentView = (ListView) view.findViewById(R.id.listView);
                 break;
             case Constants.THUMBNAILS_VIEW:
+                currentView = (GridView) view.findViewById(R.id.gridView);
+                break;
+            case Constants.PROVIDERS_VIEW:
                 currentView = (GridView) view.findViewById(R.id.gridView);
                 break;
             default:
@@ -118,6 +127,10 @@ public class NodesFragment extends Fragment {
             nodesAdapter.setThumbnail(true);
         }
 
+        if (viewType.equals(Constants.PROVIDERS_VIEW)) {
+            nodesAdapter.setProvider(true);
+        }
+
         currentView.setAdapter(nodesAdapter);
         currentView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -125,7 +138,6 @@ public class NodesFragment extends Fragment {
 
                 // Clicked node object
                 Node node = (Node) parent.getAdapter().getItem(position);
-
                 // If node is dir then open it
                 if (node.isDir) {
                     openDir(node);

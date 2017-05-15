@@ -16,6 +16,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -172,6 +174,10 @@ public class Filepicker extends Activity implements AuthFragment.Contract, Nodes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(android.R.color.transparent);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filepicker);
 
@@ -449,7 +455,7 @@ public class Filepicker extends Activity implements AuthFragment.Contract, Nodes
         if (mExport) {
             return ExportFragment.newInstance(null, mProviders, Constants.LIST_VIEW);
         } else {
-            return NodesFragment.newInstance(null, mProviders, Constants.LIST_VIEW);
+            return NodesFragment.newInstance(null, mProviders, Constants.PROVIDERS_VIEW);
         }
     }
 
